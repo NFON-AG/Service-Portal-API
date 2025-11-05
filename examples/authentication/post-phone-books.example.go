@@ -1,0 +1,95 @@
+/**
+ * Copyright (c) 2025 NFON AG
+ * NFON Service Portal API POST example: Create phone book entry
+ *
+ * What it does:
+ * Sends a POST request to create a new phone book entry for a customer account.
+ *
+ * Steps to run:
+ * 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+ * 2. Run: go run post-phone-book.example.go
+ *
+ * Requirements:
+ * - Go 1.13+
+ */
+
+package main
+
+import (
+	"bytes"
+	"crypto/hmac"
+	"crypto/md5"
+	"crypto/sha1"
+	"encoding/base64"
+	"encoding/hex"
+	"fmt"
+	"io"
+	"net/http"
+	"time"
+)
+
+const (
+	APIKeyID     = "<YourAPIKeyId>"
+	APIKeySecret = "<YourAPIKeySecret>"
+	CustomerID   = "<YourCustomerAccount>"
+	BaseURL      = "https://portal-api.nfon.net:8090"
+)
+
+func main() {
+	method := "POST"
+	path := fmt.Sprintf("/api/customers/%s/phone-books", CustomerID)
+	url := BaseURL + path
+	contentType := "application/json"
+
+	// Step 1: Prepare JSON body
+	jsonBody := []byte(`{
+		"data": [
+			{ "name": "displayName", "value": "John Doe" },
+			{ "name": "displayNumber", "value": "+49 (176) 12345678" }
+		]
+	}`)
+
+	// Step 2: Compute Content-MD5
+	md5Sum := md5.Sum(jsonBody)
+	contentMD5 := hex.EncodeToString(md5Sum[:])
+
+	// Step 3: Create RFC 2616-compliant date
+	date := time.Now().UTC().Format(http.TimeFormat)
+
+	// Step 4: Build StringToSign
+	stringToSign := fmt.Sprintf("%s\n%s\n%s\n%s\n%s", method, contentMD5, contentType, date, path)
+
+	// Step 5: Sign with HMAC-SHA1
+	h := hmac.New(sha1.New, []byte(APIKeySecret))
+	h.Write([]byte(stringToSign))
+	signature := base64.StdEncoding.EncodeToString(h.Sum(nil))
+
+	// Step 6: Create POST request
+	req, err := http.NewRequest(method, url, bytes.NewReader(jsonBody))
+	if err != nil {
+		panic(err)
+	}
+
+	req.Header.Set("Authorization", fmt.Sprintf("NFON-API %s:%s", APIKeyID, signature))
+	req.Header.Set("x-nfon-date", date)
+	req.Header.Set("Content-Type", contentType)
+	req.Header.Set("Content-MD5", contentMD5)
+	req.Header.Set("Content-Length", fmt.Sprintf("%d", len(jsonBody)))
+
+	// Step 7: Execute and print response
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading response body:", err)
+		return
+	}
+
+	fmt.Println("Status:", resp.Status)
+	fmt.Println("Response:", string(body))
+}

@@ -1,0 +1,55 @@
+/**
+ * Copyright (c) 2025 NFON AG
+ * NFON Service Portal API GET example: Retrieve phone extensions
+ *
+ * What it does:
+ * Sends a GET request to retrieve a list of phone extensions for a customer account.
+ *
+ * Steps to run:
+ * 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+ * 2. Run: node get-phone-extensions.example.mjs
+ *
+ * Requirements:
+ * - Node.js 18+
+ */
+
+import crypto from 'crypto';
+
+const API_KEY_ID = '<YourAPIKeyId>';
+const API_KEY_SECRET = '<YourAPIKeySecret>';
+const CUSTOMER_ACCOUNT = '<YourCustomerAccount>';
+
+const BASE_URL = 'https://portal-api.nfon.net:8090';
+const PATH = `/api/customers/${CUSTOMER_ACCOUNT}/targets/phone-extensions`;
+const METHOD = 'GET';
+
+// Step 1: Create RFC 2616-compliant date header
+const date = new Date().toUTCString();
+
+// Step 2: Build the StringToSign (GET does not include Content-MD5 or Content-Type)
+const stringToSign = `${METHOD}\n${date}\n${PATH}`;
+
+// Step 3: Sign using HMAC-SHA1 with your API secret
+const signature = crypto.createHmac('sha1', API_KEY_SECRET).update(stringToSign).digest('base64');
+
+// Step 4: Send the request with fetch
+const response = await fetch(`${BASE_URL}${PATH}`, {
+  method: METHOD,
+  headers: {
+    'Authorization': `NFON-API ${API_KEY_ID}:${signature}`,
+    'x-nfon-date': date
+  }
+});
+
+if (!response.ok) {
+	console.error(`Request failed: ${response.status} ${response.statusText}`);
+	process.exit(1);
+}
+
+// Step 5: Parse and display response
+const text = await response.text();
+try {
+  console.log(JSON.parse(text));
+} catch {
+  console.log(text);
+}

@@ -1,0 +1,69 @@
+
+/**
+ * Copyright (c) 2025 NFON AG
+ * NFON Service Portal API GET example: Retrieve phone extensions
+ *
+ * What it does:
+ * Sends a GET request to retrieve a list of phone extensions for a customer account.
+ *
+ * Steps to run:
+ * 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+ * 2. Compile and run: java NfonGetPhoneExtensionExample.java
+ *
+ * Requirements:
+ * - Java 11+
+ */
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import java.net.URI;
+import java.net.http.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+
+public class NfonGetPhoneExtensionExample {
+
+    private static final String API_KEY_ID = "<YourAPIKeyId>";
+    private static final String API_KEY_SECRET = "<YourAPIKeySecret>";
+    private static final String CUSTOMER_ID = "<YourCustomerAccount>";
+    private static final String BASE_URL = "https://portal-api.nfon.net:8090";
+
+    public static void main(String[] args) throws Exception {
+
+        String method = "GET";
+        String path = "/api/customers/" + CUSTOMER_ID + "/targets/phone-extensions";
+
+        // Step 1: Create RFC 2616-compliant date
+        String date = ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+
+        // Step 2: Build StringToSign
+        String stringToSign = method + "\n" + date + "\n" + path;
+
+        // Step 3: Sign using HMAC-SHA1 with API secret
+        Mac mac = Mac.getInstance("HmacSHA1");
+        mac.init(new SecretKeySpec(API_KEY_SECRET.getBytes(), "HmacSHA1"));
+        String signature = Base64.getEncoder().encodeToString(mac.doFinal(stringToSign.getBytes()));
+
+        // Step 4: Send the request using Java 11 HttpClient
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + path))
+                .method(method, HttpRequest.BodyPublishers.noBody())
+                .header("Authorization", "NFON-API " + API_KEY_ID + ":" + signature)
+                .header("x-nfon-date", date)
+                .version(HttpClient.Version.HTTP_1_1)
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Step 5: Parse and display response
+            System.out.println("Status: " + response.statusCode());
+            System.out.println("Response: " + response.body());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
