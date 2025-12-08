@@ -1,18 +1,29 @@
-
-/**
- * Copyright (c) 2025 NFON AG
- * NFON Service Portal API GET example: Retrieve phone extensions
- *
- * What it does:
- * Sends a GET request to retrieve a list of phone extensions for a customer account.
- *
- * Steps to run:
- * 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
- * 2. Compile and run: java NfonGetPhoneExtensionExample.java
- *
- * Requirements:
- * - Java 11+
- */
+// Copyright 2025 NFON AG
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+//
+// NFON Service Portal API GET example: Retrieve phone extensions
+//
+// What it does:
+// Sends a GET request to retrieve a list of phone extensions for a customer account.
+//
+// Steps to run:
+// 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+// 2. Compile and run: java NfonGetPhoneExtensionExample.java
+//
+// Requirements:
+// - Java 11+
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
