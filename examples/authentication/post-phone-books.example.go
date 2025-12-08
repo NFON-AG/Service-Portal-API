@@ -1,17 +1,29 @@
-/**
- * Copyright (c) 2025 NFON AG
- * NFON Service Portal API POST example: Create phone book entry
- *
- * What it does:
- * Sends a POST request to create a new phone book entry for a customer account.
- *
- * Steps to run:
- * 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
- * 2. Run: go run post-phone-book.example.go
- *
- * Requirements:
- * - Go 1.13+
- */
+// Copyright 2025 NFON AG
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+//
+// NFON Service Portal API POST example: Create phone book entry
+//
+// What it does:
+// Sends a POST request to create a new phone book entry for a customer account.
+//
+// Steps to run:
+// 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+// 2. Run: go run post-phone-book.example.go
+//
+// Requirements:
+// - Go 1.13+
 
 package main
 
