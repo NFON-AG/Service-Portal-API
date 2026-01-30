@@ -19,7 +19,16 @@
 // Sends a GET request to retrieve a list of phone extensions for a customer account.
 //
 // Steps to run:
-// 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+// 1. Set environment variables:
+//    Linux/macOS:        export API_KEY_ID='<YOUR API KEY ID>'
+//                        export API_KEY_SECRET='<YOUR API KEY SECRET>'
+//                        export CUSTOMER_ACCOUNT='<YOUR CUSTOMER ACCOUNT>'
+//    Windows CMD:        set API_KEY_ID=<YOUR API KEY ID>
+//                        set API_KEY_SECRET=<YOUR API KEY SECRET>
+//                        set CUSTOMER_ACCOUNT=<YOUR CUSTOMER ACCOUNT>
+//    Windows PowerShell: $env:API_KEY_ID='<YOUR API KEY ID>'
+//                        $env:API_KEY_SECRET='<YOUR API KEY SECRET>'
+//                        $env:CUSTOMER_ACCOUNT='<YOUR CUSTOMER ACCOUNT>'
 // 2. Run: go run get-phone-extensions.example.go
 //
 // Requirements:
@@ -34,17 +43,22 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 )
 
-const (
-	APIKeyID     = "<YourAPIKeyId>"
-	APIKeySecret = "<YourAPIKeySecret>"
-	CustomerID   = "<YourCustomerAccount>"
-	BaseURL      = "https://portal-api.nfon.net:8090"
-)
+const BaseURL = "https://portal-api.nfon.net:8090"
 
 func main() {
+	APIKeyID := os.Getenv("API_KEY_ID")
+	APIKeySecret := os.Getenv("API_KEY_SECRET")
+	CustomerID := os.Getenv("CUSTOMER_ACCOUNT")
+
+	if APIKeyID == "" || APIKeySecret == "" || CustomerID == "" {
+		fmt.Println("Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set")
+		os.Exit(1)
+	}
+
 	method := "GET"
 	path := fmt.Sprintf("/api/customers/%s/targets/phone-extensions", CustomerID)
 

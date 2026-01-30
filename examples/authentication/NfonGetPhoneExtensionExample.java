@@ -19,7 +19,16 @@
 // Sends a GET request to retrieve a list of phone extensions for a customer account.
 //
 // Steps to run:
-// 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+// 1. Set environment variables:
+//    Linux/macOS:        export API_KEY_ID='<YOUR API KEY ID>'
+//                        export API_KEY_SECRET='<YOUR API KEY SECRET>'
+//                        export CUSTOMER_ACCOUNT='<YOUR CUSTOMER ACCOUNT>'
+//    Windows CMD:        set API_KEY_ID=<YOUR API KEY ID>
+//                        set API_KEY_SECRET=<YOUR API KEY SECRET>
+//                        set CUSTOMER_ACCOUNT=<YOUR CUSTOMER ACCOUNT>
+//    Windows PowerShell: $env:API_KEY_ID='<YOUR API KEY ID>'
+//                        $env:API_KEY_SECRET='<YOUR API KEY SECRET>'
+//                        $env:CUSTOMER_ACCOUNT='<YOUR CUSTOMER ACCOUNT>'
 // 2. Compile and run: java NfonGetPhoneExtensionExample.java
 //
 // Requirements:
@@ -36,12 +45,19 @@ import java.util.Base64;
 
 public class NfonGetPhoneExtensionExample {
 
-    private static final String API_KEY_ID = "<YourAPIKeyId>";
-    private static final String API_KEY_SECRET = "<YourAPIKeySecret>";
-    private static final String CUSTOMER_ID = "<YourCustomerAccount>";
+    private static final String API_KEY_ID = System.getenv("API_KEY_ID");
+    private static final String API_KEY_SECRET = System.getenv("API_KEY_SECRET");
+    private static final String CUSTOMER_ID = System.getenv("CUSTOMER_ACCOUNT");
     private static final String BASE_URL = "https://portal-api.nfon.net:8090";
 
     public static void main(String[] args) throws Exception {
+
+        if (API_KEY_ID == null || API_KEY_ID.isEmpty() || 
+            API_KEY_SECRET == null || API_KEY_SECRET.isEmpty() || 
+            CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
+            System.err.println("Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set");
+            System.exit(1);
+        }
 
         String method = "GET";
         String path = "/api/customers/" + CUSTOMER_ID + "/targets/phone-extensions";
