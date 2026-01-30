@@ -73,7 +73,8 @@ For best practices, implementation guidance, and community support:
 
 For technical issues or suspected bugs, please contact NFON Support directly.
 
-> 💡 Before submitting a support ticket, please test your use case using the **[Postman Collection](#postman-collection)** and include any relevant request/response output when contacting NFON Support. This improves our ability to assist and continuously improves the collection for all users.
+> [!TIP]
+> Before submitting a support ticket, please test your use case using the **[Postman Collection](#postman-collection)** and include any relevant request/response output when contacting NFON Support. This improves our ability to assist and continuously improves the collection for all users. Make sure to remove any credentials or sensitive data before sending your support request.
 
 ## Quick Start
 
@@ -139,7 +140,8 @@ Here’s what each part means:
 | `:`           | A required separator between the Key ID and the signature                  |
 | `<Signature>` | A cryptographic hash derived from request data and your **API Key Secret** |
 
-> 💡 The `<Signature>` is the most complex part. 
+> [!TIP]
+> The `<Signature>` is the most complex part. 
 > It must be calculated using specific request elements and a secure hashing algorithm.
 > We’ll break that down in the next section.
 
@@ -235,7 +237,8 @@ signatureBase64 = Base64Encode(signature)
 Below you’ll find working examples for API operations using various programming languages.
 These are designed to help you get started quickly and understand how to authenticate and interact with the NFON Service Portal API.
 
-> 💡 **Cannot find your programming language of choice?** We recommend you to use an **AI assistant** to rewrite the examples to other programming languages.
+> [!TIP]
+> **Cannot find your programming language of choice?** We recommend using an **AI assistant** to rewrite the examples in other programming languages.
 
 #### GET/DELETE Request 
 
@@ -351,7 +354,8 @@ NFON offers a comprehensive **Postman Collection** to help you explore and test 
 - Repeat the import process for the environment file. The imported environment name is `Production Client Account`
 
 **4. Configure Environment Variables**
-> **⚠️ Use only the “Current Value” column in the environment editor** — avoid the “Initial Value” field, as it syncs to the Postman cloud and might expose sensitive keys.
+> [!WARNING]
+> **Use only the “Current Value” column in the environment editor** — avoid the “Initial Value” field, as it syncs to the Postman cloud and might expose sensitive values.
 
 - `apiKey` – your NFON API Key ID
 - `apiSecret` – your API Key Secret

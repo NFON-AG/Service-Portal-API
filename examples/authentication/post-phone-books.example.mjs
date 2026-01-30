@@ -19,7 +19,16 @@
 // Sends a POST request to create a new phone book entry for a customer account.
 //
 // Steps to run:
-// 1. Enter your API_KEY_ID, API_KEY_SECRET, CUSTOMER_ACCOUNT
+// 1. Set environment variables:
+//    Linux/macOS:        export API_KEY_ID='<YOUR API KEY ID>'
+//                        export API_KEY_SECRET='<YOUR API KEY SECRET>'
+//                        export CUSTOMER_ACCOUNT='<YOUR CUSTOMER ACCOUNT>'
+//    Windows CMD:        set API_KEY_ID=<YOUR API KEY ID>
+//                        set API_KEY_SECRET=<YOUR API KEY SECRET>
+//                        set CUSTOMER_ACCOUNT=<YOUR CUSTOMER ACCOUNT>
+//    Windows PowerShell: $env:API_KEY_ID='<YOUR API KEY ID>'
+//                        $env:API_KEY_SECRET='<YOUR API KEY SECRET>'
+//                        $env:CUSTOMER_ACCOUNT='<YOUR CUSTOMER ACCOUNT>'
 // 2. Run: node post-phone-books.example.mjs
 //
 // Requirements:
@@ -27,9 +36,14 @@
 
 import crypto from 'crypto';
 
-const API_KEY_ID = '<YourAPIKeyId>';
-const API_KEY_SECRET = '<YourAPIKeySecret>';
-const CUSTOMER_ACCOUNT = '<YourCustomerAccount>';
+const API_KEY_ID = process.env.API_KEY_ID;
+const API_KEY_SECRET = process.env.API_KEY_SECRET;
+const CUSTOMER_ACCOUNT = process.env.CUSTOMER_ACCOUNT;
+
+if (!API_KEY_ID || !API_KEY_SECRET || !CUSTOMER_ACCOUNT) {
+  console.error('Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set');
+  process.exit(1);
+}
 
 const BASE_URL = 'https://portal-api.nfon.net:8090';
 const PATH = `/api/customers/${CUSTOMER_ACCOUNT}/phone-books`;
