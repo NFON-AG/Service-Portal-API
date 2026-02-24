@@ -47,12 +47,18 @@ import (
 	"time"
 )
 
-const BaseURL = "https://portal-api.nfon.net:8090"
+const (
+	// TODO: Change these values to match your application
+	appName    = "NFON-GitHub-Example" // Replace with your application name
+	appVersion = "1.0"                 // Replace with your application version
+	baseURL    = "https://portal-api.nfon.net:8090"
+)
 
 func main() {
 	APIKeyID := os.Getenv("API_KEY_ID")
 	APIKeySecret := os.Getenv("API_KEY_SECRET")
 	CustomerID := os.Getenv("CUSTOMER_ACCOUNT")
+	userAgent := appName + "/" + appVersion + " (" + CustomerID + ")"
 
 	if APIKeyID == "" || APIKeySecret == "" || CustomerID == "" {
 		fmt.Println("Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set")
@@ -74,12 +80,13 @@ func main() {
 	signature := base64.StdEncoding.EncodeToString(h.Sum(nil))
 
 	// Step 4: Send the request
-	req, err := http.NewRequest(method, BaseURL+path, nil)
+	req, err := http.NewRequest(method, baseURL+path, nil)
 	if err != nil {
 		panic(err)
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("NFON-API %s:%s", APIKeyID, signature))
 	req.Header.Set("x-nfon-date", date)
+	req.Header.Set("User-Agent", userAgent)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

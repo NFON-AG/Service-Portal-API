@@ -36,6 +36,10 @@
 
 import crypto from 'crypto';
 
+// TODO: Change these values to match your application
+const appName = 'NFON-GitHub-Example';  // Replace with your application name
+const appVersion = '1.0';               // Replace with your application version
+
 const API_KEY_ID = process.env.API_KEY_ID;
 const API_KEY_SECRET = process.env.API_KEY_SECRET;
 const CUSTOMER_ACCOUNT = process.env.CUSTOMER_ACCOUNT;
@@ -44,6 +48,8 @@ if (!API_KEY_ID || !API_KEY_SECRET || !CUSTOMER_ACCOUNT) {
   console.error('Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set');
   process.exit(1);
 }
+
+const userAgent = `${appName}/${appVersion} (${CUSTOMER_ACCOUNT})`;
 
 const BASE_URL = 'https://portal-api.nfon.net:8090';
 const PATH = `/api/customers/${CUSTOMER_ACCOUNT}/targets/phone-extensions`;
@@ -63,7 +69,8 @@ const response = await fetch(`${BASE_URL}${PATH}`, {
   method: METHOD,
   headers: {
     'Authorization': `NFON-API ${API_KEY_ID}:${signature}`,
-    'x-nfon-date': date
+    'x-nfon-date': date,
+    'User-Agent': userAgent
   }
 });
 

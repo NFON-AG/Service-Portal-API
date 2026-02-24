@@ -45,6 +45,10 @@ import java.security.MessageDigest;
 
 public class NfonPostPhoneBooksExample {
 
+    // TODO: Change these values to match your application
+    private static final String APP_NAME = "NFON-GitHub-Example";  // Replace with your application name
+    private static final String APP_VERSION = "1.0";               // Replace with your application version
+
     private static final String API_KEY_ID = System.getenv("API_KEY_ID");
     private static final String API_KEY_SECRET = System.getenv("API_KEY_SECRET");
     private static final String CUSTOMER_ID = System.getenv("CUSTOMER_ACCOUNT");
@@ -58,6 +62,8 @@ public class NfonPostPhoneBooksExample {
             System.err.println("Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set");
             System.exit(1);
         }
+
+        String userAgent = APP_NAME + "/" + APP_VERSION + " (" + CUSTOMER_ID + ")";
 
         String method = "POST";
         String path = "/api/customers/" + CUSTOMER_ID + "/phone-books";
@@ -96,6 +102,7 @@ public class NfonPostPhoneBooksExample {
                 .header("x-nfon-date", date)
                 .header("Content-Type", contentType)
                 .header("Content-MD5", contentMD5)
+                .header("User-Agent", userAgent)
                 .version(HttpClient.Version.HTTP_1_1)
                 .build();
 
