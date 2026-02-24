@@ -50,12 +50,18 @@ import (
 	"time"
 )
 
-const BaseURL = "https://portal-api.nfon.net:8090"
+const (
+	// TODO: Change these values to match your application
+	appName    = "NFON-GitHub-Example" // Replace with your application name
+	appVersion = "1.0"                 // Replace with your application version
+	baseURL    = "https://portal-api.nfon.net:8090"
+)
 
 func main() {
 	APIKeyID := os.Getenv("API_KEY_ID")
 	APIKeySecret := os.Getenv("API_KEY_SECRET")
 	CustomerID := os.Getenv("CUSTOMER_ACCOUNT")
+	userAgent := appName + "/" + appVersion + " (" + CustomerID + ")"
 
 	if APIKeyID == "" || APIKeySecret == "" || CustomerID == "" {
 		fmt.Println("Error: API_KEY_ID, API_KEY_SECRET, and CUSTOMER_ACCOUNT environment variables must be set")
@@ -64,7 +70,7 @@ func main() {
 
 	method := "POST"
 	path := fmt.Sprintf("/api/customers/%s/phone-books", CustomerID)
-	url := BaseURL + path
+	url := baseURL + path
 	contentType := "application/json"
 
 	// Step 1: Prepare JSON body
@@ -101,6 +107,7 @@ func main() {
 	req.Header.Set("Content-Type", contentType)
 	req.Header.Set("Content-MD5", contentMD5)
 	req.Header.Set("Content-Length", fmt.Sprintf("%d", len(jsonBody)))
+	req.Header.Set("User-Agent", userAgent)
 
 	// Step 7: Execute and print response
 	client := &http.Client{}

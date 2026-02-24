@@ -12,7 +12,12 @@
   - [Required Headers](#required-headers)
   - [Build the Authorization Header](#build-the-authorization-header)
   - [Build the Signature](#build-the-signature)
-  - [Examples](#examples)
+- [User-Agent Header](#user-agent-header)
+  - [Why is this required?](#why-is-this-required)
+  - [Implementation](#implementation)
+- [Examples](#examples)
+  - [GET/DELETE Request](#getdelete-request)
+  - [POST/PUT Request](#postput-request)
 - [Postman Collection](#postman-collection)
   - [What’s Included](#whats-included)
   - [Download the Postman Collection](#download-the-postman-collection)
@@ -107,12 +112,13 @@ You can request access on our [NFON Service Portal API product page](https://www
     - Matching the Content-MD5 in the [signature](#build-the-signature). For `POST` and `PUT` requests only.
     - Example: `a39730b7d46d6c38f1f28c832ea18e12`
 
-- `Content-Type` header:
+  - `Content-Type` header:
     -  Matching the Content-Type in the [signature](#build-the-signature). Required for `POST` and `PUT` requests only.
     -  Example: `application/json`
 
-- `x-nfon-date` header:
+  - `x-nfon-date` header:
     -  Current date/time in [RFC 2616 format] matching the [date/time the signature](#build-the-signature).
+    -  Must be within **±15 minutes** of NFON server time to prevent replay attacks.
     -  Example: `x-nfon-date: Sun, 06 Aug 2025 14:32:00 GMT`
 
 ---
@@ -221,7 +227,6 @@ signatureBase64 = Base64Encode(signature)
 - Exact Match Required: Values in the StringToSign must match the actual request headers and body exactly (case-sensitive, encoded, etc.).
 - Audio Upload Exception: For requests including audio file content, omit both Content-MD5 and Content-Type, regardless of HTTP method.
 
-
 #### Common Signature Errors 
 
 - Incorrect field order or inclusion in StringToSign
@@ -230,9 +235,41 @@ signatureBase64 = Base64Encode(signature)
 - Signature expired (timestamp is outside ±15 minutes)
 - Special characters are not URL-encoded (`+`, `/`, `=`)
 
----
+## User-Agent Header
 
-### Examples
+When integrating with the NFON Service Portal API, please include a User-Agent header in all HTTP requests with the following format:
+
+```
+<productname>/<productversion> (<K-Account>)
+```
+
+Example:
+```
+my-crm-app/1.5.1 (KXXXX)
+```
+
+### Why is this required?
+
+Including your application name, version, and account in the User-Agent helps NFON's technical support team:
+
+- Quickly identify your application in case of issues or unusual activity
+- Provide faster support by understanding which integration is affected
+- Contact you proactively if we detect any problems with your integration
+
+### Implementation
+
+All code examples in this repository include configurable constants at the top of each file:
+
+```go
+const (
+    appName    = "NFON-GitHub-Example"  // Replace with your application name
+    appVersion = "1.0"                          // Replace with your application version
+)
+```
+
+Simply update these values to match your application before deploying to production.
+
+## Examples
 
 Below you’ll find working examples for API operations using various programming languages.
 These are designed to help you get started quickly and understand how to authenticate and interact with the NFON Service Portal API.
@@ -240,15 +277,15 @@ These are designed to help you get started quickly and understand how to authent
 > [!TIP]
 > **Cannot find your programming language of choice?** We recommend using an **AI assistant** to rewrite the examples in other programming languages.
 
-#### GET/DELETE Request 
+### GET/DELETE Request 
 
-##### GET example: Retrieve phone extensions
+#### GET example: Retrieve phone extensions
 
 - [with Go (Golang)](./examples/authentication/get-phone-extensions.example.go)
 - [with Java](./examples/authentication/NfonGetPhoneExtensionExample.java)
 - [with Node.js / Javascript](./examples/authentication/get-phone-extensions.example.mjs)
 
-##### GET example: Pseudocode
+#### GET example: Pseudocode
 ```text
 Method: GET
 Path: /api/customers/K1234/phone-books
@@ -270,18 +307,19 @@ Step 3: Generate Signature
 Step 4: Send request
   Set header "Authorization" to: "NFON-API API_KEY_ID:signatureBase64"
   Set header "x-nfon-date" to: date
+  Set header "User-Agent" to: "my-app/1.0 (KXXXX)"
   Send GET request to https://portal-api.nfon.net:8090 + path
 ```
 
-#### POST/PUT Request
+### POST/PUT Request
 
-##### POST example: Create a phone book entry
+#### POST example: Create a phone book entry
 
 - [with Go (Golang)](./examples/authentication/post-phone-books.example.go)
 - [with Java](./examples/authentication/NfonPostPhoneBooksExample.java)
 - [with Node.js / Javascript](./examples/authentication/post-phone-books.example.mjs)
 
-##### Pseudocode
+#### Pseudocode
 
 ```text
 Method: POST
@@ -317,6 +355,7 @@ Step 4: Send request
   Set header "x-nfon-date" to: date
   Set header "Content-Type" to: contentType
   Set header "Content-MD5" to: contentMD5
+  Set header "User-Agent" to: "my-app/1.0 (KXXXX)"
   Send POST request to https://portal-api.nfon.net:8090 + path with body
 ```
 
